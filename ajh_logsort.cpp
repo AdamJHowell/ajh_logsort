@@ -13,7 +13,7 @@ I declare that the following source code was written by me, or taken from public
 #include <time.h>
 #include <stdio.h>
 //#include <dos.h>
-#include <windows.h>
+#include <windows.h>	// For directory listing
 #include <iostream>
 #include <string>
 #include <fstream>

@@ -12,15 +12,15 @@ I declare that the following source code was written by me, or taken from public
 
 #include <time.h>
 #include <stdio.h>
-//#include <dos.h>
-#include <windows.h>	// For directory listing
 #include <iostream>
 #include <string>
 #include <fstream>
 #include <array>
+#include <boost/filesystem.hpp>
 
 
 using namespace std;
+using namespace boost::filesystem;
 
 
 const string MENU1 = "Welcome to Adam's logfile sort utility.";
@@ -75,7 +75,8 @@ int main()
 	if ( dataFile1.fail() )
 	{
 		// Announce that we could not open the file.
-		cout << "Current directory is " << ExePath() << "\n";
+		boost::filesystem::path new_full_path( boost::filesystem::current_path() );
+		std::cout << "Current path is:\n" << new_full_path << std::endl;
 		cout << "Could not open file \"" << INFILE1 << "\" for reading." << endl << endl;
 	}
 	else
@@ -402,12 +403,3 @@ void quickSort( string _array[], int _start, int _end )
 		quickSort( _array, i, _end );
 	}
 } // End quickSort().
-
-
-string ExePath()
-{
-    wchar_t buffer[MAX_PATH];
-    GetModuleFileName( NULL, buffer, MAX_PATH );
-    string::size_type pos = string( buffer ).find_last_of( "\\/" );
-    return string( buffer ).substr( 0, pos);
-}

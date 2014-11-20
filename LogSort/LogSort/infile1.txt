@@ -1,5 +1,4 @@
-﻿2014-10-31 13:43:54,519 [Main] INFO  SolarWinds.Orion.Core.Common.CoreLicense - Package type is "Full". Core is not licesnsed on the main server. Assume the license is valid.
-2014-10-31 13:43:55,112 [7] INFO  SolarWinds.BusinessLayerHost.PluginInstanceAppDomain - Initializing plugin: "Core Business Layer"
+﻿2014-10-31 13:43:55,112 [7] INFO  SolarWinds.BusinessLayerHost.PluginInstanceAppDomain - Initializing plugin: "Core Business Layer"
 2014-10-31 13:43:55,112 [7] INFO  SolarWinds.BusinessLayerHost.PluginInstanceSeparateProcess - Initialize plugin C:\Program Files (x86)\SolarWinds\Orion\AgentManagement\SolarWinds.AgentManagement.ServiceCore.dll.config - ProcessID:-1
 2014-10-31 13:43:55,112 [7] INFO  SolarWinds.BusinessLayerHost.PluginInstanceSeparateProcess - Starting process C:\Program Files (x86)\SolarWinds\Orion\SolarWinds.BusinessLayerHost.exe -config="C:\Program Files (x86)\SolarWinds\Orion\AgentManagement\SolarWinds.AgentManagement.ServiceCore.dll.config" -id=5096cf53-fd72-4534-b6ca-936f41a8e0fb -parent=4896
 2014-10-31 13:43:55,330 [7] INFO  SolarWinds.BusinessLayerHost.PluginInstanceAppDomain - Initializing plugin: "Agent Management Watchdog"
@@ -15,6 +14,7 @@
 2014-10-31 13:43:57,249 [7] INFO  SolarWinds.BusinessLayerHost.PluginInstanceAppDomain - Initializing plugin: "Virtualization Business Layer"
 2014-10-31 13:43:58,497 [7] INFO  SolarWinds.BusinessLayerHost.PluginInstanceAppDomain - Initializing plugin: "VNQM Business Layer"
 2014-10-31 13:43:58,497 [7] INFO  SolarWinds.BusinessLayerHost.PluginInstanceAppDomain - Starting plugin: "Core Business Layer"
+2014-10-31 13:43:54,519 [Main] INFO  SolarWinds.Orion.Core.Common.CoreLicense - Package type is "Full". Core is not licesnsed on the main server. Assume the license is valid.
 2014-10-31 13:44:07,124 [7] INFO  SolarWinds.BusinessLayerHost.PluginInstanceSeparateProcess - Starting plugin C:\Program Files (x86)\SolarWinds\Orion\AgentManagement\SolarWinds.AgentManagement.ServiceCore.dll.config - ProcessID:1844
 2014-10-31 13:44:07,124 [7] INFO  SolarWinds.BusinessLayerHost.PluginInstanceAppDomain - Starting plugin: "Agent Management Watchdog"
 2014-10-31 13:44:07,498 [7] INFO  SolarWinds.BusinessLayerHost.PluginInstanceAppDomain - Starting plugin: "APM Business Layer"

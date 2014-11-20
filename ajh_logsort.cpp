@@ -27,15 +27,12 @@ const string MENU1 = "Welcome to Adam's logfile sort utility.";
 const string MENU2 = "\n";
 const string HEADER1 = "\n\t\t\t\tElapsed\tElapsed\tOutput";
 const string HEADER2 = "Sort Method\tFile#\tTotal\tTicks\tTime\tFile Name";
-const char DELIMITER = '\n';			// The delimiter that I use with getline.
-const int IGNORE = 4096;				// I use this when clearing the input buffer.
-const int ARRAYSIZE = 250;//100000;			// The size of the array for the input files.
-const string ARRAYDEFAULT = "0";		// The value to initialize array elements to.
 const string INFILE1 = "infile1.txt";	// Input file 1.
 const string INFILE2 = "infile2.txt";	// Input file 2.
 const string OUTFILE = "outfile.txt";	// Output file.
 
 
+int fileCount( ifstream& _handle );							// My file line-counting function.
 int fileRead( ifstream& _handle, string _array[] );				// My file reading function.
 void printArray( string _array[], int _length );					// My array printing (to screen) function.
 void writeArray( string _array[], int _length, string _fileName );	// My array writing (to disc) function.
@@ -46,9 +43,15 @@ void quickSort( string _array[], int _start, int _length );			// My Quick Sort f
 
 int main()
 {
-	int fileCount1 = 0;			// The number of lines in input file 1.
-	int fileCount2 = 0;			// The number of lines in input file 2.
-	int fileCount3 = 0;			// The number of lines in input file 3.
+	int arraySize = 0;			// The number of lines in the current input file.
+	int fileCount1 = 0;			// The number of lines read in input file 1.
+	int fileCount2 = 0;			// The number of lines read in input file 2.
+	int fileCount3 = 0;			// The number of lines read in input file 3.
+	double iSort = 0;			// The time in ticks it takes to Insertion Sort.
+	double sSort = 0;			// The time in ticks it takes to Shell Sort.
+	double qSort = 0;			// The time in ticks it takes to Quick Sort.
+	clock_t start;				// A temporary variable to hold the current clock time.
+	clock_t end;				// A temporary variable to hold the current clock time.
 
 	// Print the program header.
 	cout << MENU1 << endl;
@@ -68,47 +71,77 @@ int main()
 	{
 		// Test code.
 		//cout << "Opened \"" << INFILE1 << "\" for reading." << endl;
+		
+		// Count the number of lines in the file.
+		arraySize = fileCount( dataFile1 );
 
-		string* arrayi1 = new string[ARRAYSIZE];	// Create arrayi1 on the heap to hold the lines read from the input file.
-//		string* arrays1 = new string[ARRAYSIZE];	// Create arrays1 on the heap to hold the lines read from the input file.
-//		string* arrayq1 = new string[ARRAYSIZE];	// Create arrayq1 on the heap to hold the lines read from the input file.
+		string* arrayi1 = new string[arraySize];	// Create arrayi1 on the heap to hold the lines read from the input file.
+		string* arrays1 = new string[arraySize];	// Create arrays1 on the heap to hold the lines read from the input file.
+		string* arrayq1 = new string[arraySize];	// Create arrayq1 on the heap to hold the lines read from the input file.
 
-		// Read the file into the array
+		// Read the file into the array.
 		fileCount1 = fileRead( dataFile1, arrayi1 );
 
 		// Test code.
-		cout << INFILE1 << " had " << fileCount1 << " lines read in " << endl;
+		cout << "Counted " << arraySize << " lines in " << INFILE1 << ", and read " << fileCount1 << " lines in." << endl;
 
-//Insertion Sort
-		// Sort the array using Insertion Sort.
-		insertionSort( arrayi1, ARRAYSIZE );
-
-		// Write the sorted array to the output file.
-		writeArray( arrayi1, ARRAYSIZE, OUTFILE );
-
-		// Print the results to the screen.
-		cout << "Insertion Sort\t" << fileCount1 << "\t" << OUTFILE << endl;
-/*
-//Shell Sort
-		// Sort the array using Shell Sort.
-		shellSort( arrays1, ARRAYSIZE );
-
-		// Write the sorted array to the output file.
-		writeArray( arrays1, ARRAYSIZE, OUTFILE );
-
-		// Print the results to the screen.
-		cout << "Shell Sort\t" << fileCount1 << "\t" << OUTFILE << endl;
+//Insertion Sort\
+		cout << "Insertion sorting..." << endl;
+		// Get the starting tick.
+		start = clock();
 		
-//Quick Sort
-		// Sort the array using Quick Sort.
-		quickSort( arrayq1, 0, ARRAYSIZE - 1 );
+		// Sort the array using Insertion Sort.
+		insertionSort( arrayi1, arraySize );
+		
+		// Get the ending tick.
+		end = clock();
+		// Determine how long it too to read in the third file.
+		iSort = end - start;
 
 		// Write the sorted array to the output file.
-		writeArray( arrayq1, ARRAYSIZE, OUTFILE );
+		writeArray( arrayi1, arraySize, OUTFILE );
 
 		// Print the results to the screen.
-		cout << "Quick Sort\t" << fileCount1 << "\t" << OUTFILE << "\n" << endl;
-*/
+		cout << "Insertion Sort\t" << fileCount1 << "\t" << OUTFILE << " took " << iSort / CLK_TCK << " seconds (" << iSort << " ticks." << endl;
+
+//Shell Sort
+		cout << "Shell sorting..." << endl;
+		// Get the starting tick.
+		start = clock();
+
+		// Sort the array using Shell Sort.
+		shellSort( arrays1, arraySize );
+
+		// Get the ending tick.
+		end = clock();
+		// Determine how long it too to read in the third file.
+		sSort = end - start;
+
+		// Write the sorted array to the output file.
+		writeArray( arrays1, arraySize, OUTFILE );
+
+		// Print the results to the screen.
+		cout << "Shell Sort\t" << fileCount1 << "\t" << OUTFILE << " took " << sSort / CLK_TCK << " seconds (" << sSort << " ticks." << endl;
+
+//Quick Sort
+		cout << "Quick sorting..." << endl;
+		// Get the starting tick.
+		start = clock();
+
+		// Sort the array using Quick Sort.
+		quickSort( arrayq1, 0, arraySize - 1 );
+
+		// Get the ending tick.
+		end = clock();
+		// Determine how long it too to read in the third file.
+		qSort = end - start;
+
+		// Write the sorted array to the output file.
+		writeArray( arrayq1, arraySize, OUTFILE );
+
+		// Print the results to the screen.
+		cout << "Quick Sort\t" << fileCount1 << "\t" << OUTFILE << " took " << qSort / CLK_TCK << " seconds (" << qSort << " ticks." << endl;
+
 	}
 	// Close the file used for reading.
 	dataFile1.close();
@@ -117,6 +150,38 @@ int main()
 	system( "PAUSE" );
 	return 0;
 }// End main().
+
+
+// Function name:	fileCount()
+// Purpose:		This function will the number of lines in a file.
+// Parameters:		The file handle to read.
+// Returns:		The number of lines in the file.
+// Preconditions:	none
+// Postconditions:	none
+int fileCount( ifstream& _handle )
+{
+	string fileStr = "";	// Variable to temporarily hold the contents read from the file.
+	int length = 0;		// Variable to count the lines in the file.
+
+	// Loop until End Of File, reading one number at a time.
+	while ( !_handle.eof() )
+	{
+		// Test code.
+		//cout << "Entered the fileCount() while() loop." << endl;
+
+		// Read one line from dataFile1 into fileStr.  I know this is not fast.  I plan to add a buffered approach later.
+		getline( _handle, fileStr );
+
+		// Increment length.
+		length++;
+
+		// Test code.
+		//cout << "Total values read so far: " << length << endl;
+	}
+	// Test code.
+	//cout << "Exited the fileCount() while() loop." << endl;
+	return length;
+} // End fileCount().
 
 
 // Function name:	fileRead()

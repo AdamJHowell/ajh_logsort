@@ -28,8 +28,8 @@ const string MENU2 = "\n";
 const string HEADER1 = "\n\t\t\t\tElapsed\tElapsed\tOutput";
 const string HEADER2 = "Sort Method\tFile#\tTotal\tTicks\tTime\tFile Name";
 const char DELIMITER = '\n';			// The delimiter that I use with getline.
-//const int IGNORE = 4096;				// I use this when clearing the input buffer.
-const int ARRAYSIZE = 100000;			// The size of the array for the second file.
+const int IGNORE = 4096;				// I use this when clearing the input buffer.
+const int ARRAYSIZE = 250;//100000;			// The size of the array for the input files.
 const string ARRAYDEFAULT = "0";		// The value to initialize array elements to.
 const string INFILE1 = "infile1.txt";	// Input file 1.
 const string INFILE2 = "infile2.txt";	// Input file 2.
@@ -46,27 +46,14 @@ void quickSort( string _array[], int _start, int _length );			// My Quick Sort f
 
 int main()
 {
-	string fileStr = "";		// A variable to hold the line read from each file before converting to an integer.
 	int fileCount1 = 0;			// The number of lines in input file 1.
 	int fileCount2 = 0;			// The number of lines in input file 2.
 	int fileCount3 = 0;			// The number of lines in input file 3.
-	double read1 = 0;			// The time int ticks it takes to read file 1.
-	double iSort1 = 0;			// The time int ticks it takes to Insertion Sort file 1.
-	double sSort1 = 0;			// The time int ticks it takes to Shell Sort file 1.
-	double qSort1 = 0;			// The time int ticks it takes to Quick Sort file 1.
-	double read2 = 0;			// The time int ticks it takes to read file 2.
-	double iSort2 = 0;			// The time int ticks it takes to Insertion Sort file 2.
-	double sSort2 = 0;			// The time int ticks it takes to Shell Sort file 2.
-	double qSort2 = 0;			// The time int ticks it takes to Quick Sort file 2.
-	double read3 = 0;			// The time int ticks it takes to read file 3.
-	double iSort3 = 0;			// The time int ticks it takes to Insertion Sort file 3.
-	double sSort3 = 0;			// The time int ticks it takes to Shell Sort file 3.
-	double qSort3 = 0;			// The time int ticks it takes to Quick Sort file 3.
-	clock_t start;				// A temporary variable to hold the current clock time.
-	clock_t end;				// A temporary variable to hold the current clock time.
 
 	// Print the program header.
 	cout << MENU1 << endl;
+	boost::filesystem::path new_full_path( boost::filesystem::current_path() );
+	std::cout << "Current path is:\n" << new_full_path << std::endl;
 
 	// Open a filestream for the file, 100,000 records maximum.
 	ifstream dataFile1( INFILE1 );
@@ -75,8 +62,6 @@ int main()
 	if ( dataFile1.fail() )
 	{
 		// Announce that we could not open the file.
-		boost::filesystem::path new_full_path( boost::filesystem::current_path() );
-		std::cout << "Current path is:\n" << new_full_path << std::endl;
 		cout << "Could not open file \"" << INFILE1 << "\" for reading." << endl << endl;
 	}
 	else
@@ -84,87 +69,46 @@ int main()
 		// Test code.
 		//cout << "Opened \"" << INFILE1 << "\" for reading." << endl;
 
-		string* arrayi1 = new string[ARRAYSIZE];
-		string* arrays1 = new string[ARRAYSIZE];
-		string* arrayq1 = new string[ARRAYSIZE];
-
-		// Get the starting tick.
-		start = clock();
+		string* arrayi1 = new string[ARRAYSIZE];	// Create arrayi1 on the heap to hold the lines read from the input file.
+//		string* arrays1 = new string[ARRAYSIZE];	// Create arrays1 on the heap to hold the lines read from the input file.
+//		string* arrayq1 = new string[ARRAYSIZE];	// Create arrayq1 on the heap to hold the lines read from the input file.
 
 		// Read the file into the array
-		fileCount3 = fileRead( dataFile1, arrayi1 );
-
-		// Get the ending tick.
-		end = clock();
-		// Determine how long it too to read in the third file.
-		read3 = end - start;
-
-		// Verify that the file size is what we expected.  This is needed to ensure the arrays are large enough to hold the entire file.
-		if ( fileCount3 != ARRAYSIZE )
-		{
-			cout << "The number of entries in " << INFILE1 << " does not match what was expected." << endl;
-			cout << "Please check " << INFILE1 << " and restart this program." << endl;
-			system( "PAUSE" );
-			exit( 1 );
-		}
+		fileCount1 = fileRead( dataFile1, arrayi1 );
 
 		// Test code.
-		//cout << INFILE3 << " had " << fileCount3 << " values/lines, and was read in " << read3 / CLK_TCK << " seconds (" << read3 << " ticks)." << endl;
+		cout << INFILE1 << " had " << fileCount1 << " lines read in " << endl;
 
-		// Copy the array for Insertion Sort to the arrays for Shell Sort and Quick Sort.
-		for (int i = 0; i < ARRAYSIZE; i++)
-		{
-			arrays1[i] = arrayi1[i];
-			arrayq1[i] = arrayi1[i];
-		}
-
-//Insertion Sort 3
-		// Get the starting tick.
-		start = clock();
+//Insertion Sort
 		// Sort the array using Insertion Sort.
 		insertionSort( arrayi1, ARRAYSIZE );
-		// Get the ending tick.
-		end = clock();
-		// Determine how long Insertion Sort took to sort the third file.
-		iSort3 = end - start;
 
 		// Write the sorted array to the output file.
 		writeArray( arrayi1, ARRAYSIZE, OUTFILE );
 
 		// Print the results to the screen.
-		cout << "Insertion\t3\t" << fileCount3 << "\t" << iSort3 << "\t" << iSort3 / CLK_TCK << "\t" << OUTFILE << endl;
-
-//Shell Sort 3
-		// Get the starting tick.
-		start = clock();
-		// Sort the array using Insertion Sort.
+		cout << "Insertion Sort\t" << fileCount1 << "\t" << OUTFILE << endl;
+/*
+//Shell Sort
+		// Sort the array using Shell Sort.
 		shellSort( arrays1, ARRAYSIZE );
-		// Get the ending tick.
-		end = clock();
-		// Determine how long Insertion Sort took to sort the third file.
-		sSort3 = end - start;
 
 		// Write the sorted array to the output file.
 		writeArray( arrays1, ARRAYSIZE, OUTFILE );
 
 		// Print the results to the screen.
-		cout << "Shell\t\t3\t" << fileCount3 << "\t" << sSort3 << "\t" << sSort3 / CLK_TCK << "\t" << OUTFILE << endl;
+		cout << "Shell Sort\t" << fileCount1 << "\t" << OUTFILE << endl;
 		
-//Quick Sort 3
-		// Get the starting tick.
-		start = clock();
-		// Sort the array using Insertion Sort.
+//Quick Sort
+		// Sort the array using Quick Sort.
 		quickSort( arrayq1, 0, ARRAYSIZE - 1 );
-		// Get the ending tick.
-		end = clock();
-		// Determine how long Insertion Sort took to sort the third file.
-		qSort3 = end - start;
 
 		// Write the sorted array to the output file.
 		writeArray( arrayq1, ARRAYSIZE, OUTFILE );
 
 		// Print the results to the screen.
-		cout << "Quick\t\t3\t" << fileCount3 << "\t" << qSort3 << "\t" << qSort3 / CLK_TCK << "\t" << OUTFILE << "\n" << endl;
+		cout << "Quick Sort\t" << fileCount1 << "\t" << OUTFILE << "\n" << endl;
+*/
 	}
 	// Close the file used for reading.
 	dataFile1.close();
@@ -190,7 +134,7 @@ int fileRead( ifstream& _handle, string _array[] )
 	while ( !_handle.eof() )
 	{
 		// Test code.
-		//cout << "Entered the while() loop." << endl;
+		cout << "Entered the fileRead() while() loop." << endl;
 
 		// Read one line from dataFile1 into fileStr.
 		getline( _handle, fileStr );
@@ -205,8 +149,10 @@ int fileRead( ifstream& _handle, string _array[] )
 		length++;
 
 		// Test code.
-		//cout << "Total values read so far: " << length << endl;
+		cout << "Total values read so far: " << length << endl;
 	}
+	// Test code.
+	cout << "Exited the fileRead() while() loop." << endl;
 	return length;
 } // End fileRead().
 
@@ -272,13 +218,23 @@ void insertionSort( string _array[], int _length )
 	Insertion Sort finds a value out of place, and inserts it where it should go.
 	This involves storing the out of place value in a temp variable, shifting all values to make room, and inserting that temp value in it's proper spot.
 	*/
-	string temp = 0;
+
+	// Test code.
+	cout << "Starting Insertion Sort" << endl;
+
+	string temp = "";
 	int loop = 0;
 	for (int i = 0; i < _length; i++)
 	{
+		// Test code.
+		//cout << "Inside the for() loop." << endl;
+
 		loop = i;
 		while ( loop > 0 && _array[loop - 1] > _array[loop] )
 		{
+			// Test code.
+			//cout << "Inside the while() loop." << endl;
+
 			// Save the current position in the array to temp.
 			temp = _array[loop];
 			// Assign the current position in the array to the value at the next lower position.
@@ -289,6 +245,8 @@ void insertionSort( string _array[], int _length )
 			loop--;
 		}
 	}
+	// Test code.
+	cout << "Exiting Insertion Sort" << endl;
 } // End insertionSort().
 
 

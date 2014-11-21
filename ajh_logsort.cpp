@@ -24,18 +24,17 @@ using namespace boost::filesystem;
 
 
 const string MENU1 = "Welcome to Adam's logfile sort utility.";
-const string MENU2 = "Please enter the name of the first file to sort: ";
-const string MENU3 = "Please enter the name of the second file to sort: ";
+const string MENU2 = "Please enter the name of the first input file: ";
+const string MENU3 = "Please enter the name of the second input file: ";
+const string MENU4 = "Please enter the name of the output file: ";
+const string MENU5 = "Please enter the sort method to use (I)nsertion, (S)hell, or (Q)uick: ";
 const string HEADER1 = "\n\t\t\t\tElapsed\tElapsed\tOutput";
 const string HEADER2 = "Sort Method\tFile#\tTotal\tTicks\tTime\tFile Name";
-const string INFILE1 = "infile1.txt";	// Input file 1.
-const string INFILE2 = "infile2.txt";	// Input file 2.
-const string OUTFILE = "outfile.txt";	// Output file.
 const int IGNORE = 4096;				// This is used to clear the input buffer.
 
 
 int fileCount( ifstream& _handle );							// My file line-counting function.
-int fileRead( ifstream& _handle, string _array[] );				// My file reading function.
+int fileRead( ifstream& _handle, string _array[], int _offset );		// My file reading function.
 void printArray( string _array[], int _length );					// My array printing (to screen) function.
 void writeArray( string _array[], int _length, string _fileName );	// My array writing (to disc) function.
 void insertionSort( string _array[], int _length );				// My Insertion Sort function.
@@ -45,8 +44,12 @@ void quickSort( string _array[], int _start, int _length );			// My Quick Sort f
 
 int main()
 {
-	string userFile1 = "";		// The first file name.
-	string userFile2 = "";		// The second file name.
+	string userFile1 = "";		// The first input file name.
+	string userFile2 = "";		// The second input file name.
+	string outFile = "";		// The output file name.
+	string sortChoice = "";		// The users selected sort method.
+	int fileSize1 = 0;			// The size of file 1.
+	int fileSize2 = 0;			// The size of file 2.
 	int arraySize = 0;			// The number of lines in the current input file.
 	int fileCount1 = 0;			// The number of lines read in input file 1.
 	int fileCount2 = 0;			// The number of lines read in input file 2.
@@ -61,25 +64,58 @@ int main()
 	cout << MENU1 << endl;
 	boost::filesystem::path new_full_path( boost::filesystem::current_path() );
 	std::cout << "Current path is:\n" << new_full_path << std::endl;
-	cout << MENU2 << endl;
+
+	cout << MENU2;
 	// Read in the first file name.
 	cin >> userFile1;
 	// Clear the input buffer.
 	cin.ignore( IGNORE, '\n' );
-	cout << endl;
 	
-	cout << MENU3 << endl;
+	cout << MENU3;
 	// Read in the first file name.
 	cin >> userFile2;
 	// Clear the input buffer.
 	cin.ignore( IGNORE, '\n' );
+
+	cout << MENU4;
+	// Read in the first file name.
+	cin >> outFile;
+	// Clear the input buffer.
+	cin.ignore( IGNORE, '\n' );
+
+	cout << MENU5;
+	// Read in the first file name.
+	cin >> sortChoice;
+	// Clear the input buffer.
+	cin.ignore( IGNORE, '\n' );
 	cout << endl;
-	
-	cout << "Attempting to open " << userFile1 << endl;
+
+	if ( sortChoice[0] == 'i' )
+	{
+		sortChoice = "I";
+	}
+	else if ( sortChoice[0] == 's' )
+	{
+		sortChoice = "S";
+	}
+	else if ( sortChoice[0] == 'q' )
+	{
+		sortChoice = "Q";
+	}
+	else
+	{
+		cout << "Could not read your sort choice, exiting." << endl;
+		system( "PAUSE" );
+		exit (1);
+	}
+
+	// Test code.
+	//cout << "Attempting to open " << userFile1 << endl;
 	// Open a filestream for the first file.
 	ifstream dataFile1( userFile1 );
 	
-	cout << "Attempting to open " << userFile2 << endl;
+	// Test code.
+	//cout << "Attempting to open " << userFile2 << endl;
 	// Open a filestream for the second file.
 	ifstream dataFile2( userFile2 );
 
@@ -99,10 +135,20 @@ int main()
 		// Test code.
 		//cout << "Opened \"" << INFILE1 << "\" for reading." << endl;
 		
-		// Count the number of lines in the file.
-		arraySize = fileCount( dataFile1 );
-		dataFile1.clear();						// forget we hit the end of file
-		dataFile1.seekg(0, ios::beg);				// move to the start of the file
+		// Count the number of lines in file 1.
+		fileSize1 = fileCount( dataFile1 );
+		// forget that we hit the end of file.
+		dataFile1.clear();
+		// move to the start of the file.
+		dataFile1.seekg( 0, ios::beg );
+
+		// Count the number of lines in file 2.
+		fileSize2 = fileCount( dataFile2 );
+		// forget that we hit the end of file.
+		dataFile2.clear();
+		// move to the start of the file.
+		dataFile2.seekg( 0, ios::beg );
+		arraySize = fileSize1 + fileSize2;
 
 		// Test code.
 		//cout << "Counted " << arraySize << " lines in " << INFILE1 << endl;
@@ -111,72 +157,83 @@ int main()
 		string* arrays1 = new string[arraySize];	// Create arrays1 on the heap to hold the lines read from the input file.
 		string* arrayq1 = new string[arraySize];	// Create arrayq1 on the heap to hold the lines read from the input file.
 
-		// Read the file into the array.
-		fileCount1 = fileRead( dataFile1, arrayi1 );
+		// Read the files into the array.
+		fileCount1 = fileRead( dataFile1, arrayi1, 0 );
+		fileCount2 = fileRead( dataFile2, arrayi1, fileCount1 );
 
 		// Test code.
-		cout << "Counted " << arraySize << " lines in " << INFILE1 << ", and read " << fileCount1 << " lines in." << endl;
+		cout << "Counted " << fileSize1 << " lines in " << userFile1 << ", and read " << fileCount1 << " lines in." << endl;
+		cout << "Counted " << fileSize2 << " lines in " << userFile2 << ", and read " << fileCount2 - fileCount1 << " lines in." << endl;
 
 		// Copy the array for Insertion Sort to the arrays for Shell Sort and Quick Sort.
-		for (int i = 0; i < arraySize; i++)
+		for ( int i = 0; i < arraySize; i++ )
 		{
 			arrays1[i] = arrayi1[i];
 			arrayq1[i] = arrayi1[i];
 		}
 
 //Insertion Sort
-		// Get the starting tick.
-		start = clock();
+		if ( sortChoice == "I" )
+		{
+			// Get the starting tick.
+			start = clock();
 		
-		// Sort the array using Insertion Sort.
-		insertionSort( arrayi1, arraySize );
+			// Sort the array using Insertion Sort.
+			insertionSort( arrayi1, arraySize );
 		
-		// Get the ending tick.
-		end = clock();
-		// Determine how long it too to read in the third file.
-		iSort = end - start;
+			// Get the ending tick.
+			end = clock();
+			// Determine how long it too to read in the third file.
+			iSort = end - start;
 
-		// Write the sorted array to the output file.
-		writeArray( arrayi1, arraySize, OUTFILE );
+			// Write the sorted array to the output file.
+			writeArray( arrayi1, arraySize, outFile );
 
-		// Print the results to the screen.
-		cout << "Insertion Sort of " << OUTFILE << " took " << iSort / CLK_TCK << " seconds (" << iSort << " ticks)." << endl;
+			// Print the results to the screen.
+			cout << "Insertion Sort of " << userFile1 << " and " << userFile2 << " took " << iSort / CLK_TCK << " seconds (" << iSort << " ticks)." << endl;
+		}
 
 //Shell Sort
-		// Get the starting tick.
-		start = clock();
+		else if ( sortChoice == "S" )
+		{
+			// Get the starting tick.
+			start = clock();
 
-		// Sort the array using Shell Sort.
-		shellSort( arrays1, arraySize );
+			// Sort the array using Shell Sort.
+			shellSort( arrays1, arraySize );
 
-		// Get the ending tick.
-		end = clock();
-		// Determine how long it too to read in the third file.
-		sSort = end - start;
+			// Get the ending tick.
+			end = clock();
+			// Determine how long it too to read in the third file.
+			sSort = end - start;
 
-		// Write the sorted array to the output file.
-		writeArray( arrays1, arraySize, OUTFILE );
+			// Write the sorted array to the output file.
+			writeArray( arrays1, arraySize, outFile );
 
-		// Print the results to the screen.
-		cout << "Shell Sort of " << OUTFILE << " took " << sSort / CLK_TCK << " seconds (" << sSort << " ticks)." << endl;
+			// Print the results to the screen.
+			cout << "Shell Sort of " << userFile1 << " and " << userFile2 << " took " << sSort / CLK_TCK << " seconds (" << sSort << " ticks)." << endl;
+		}
 
 //Quick Sort
-		// Get the starting tick.
-		start = clock();
+		else
+		{
+			// Get the starting tick.
+			start = clock();
 
-		// Sort the array using Quick Sort.
-		quickSort( arrayq1, 0, arraySize - 1 );
+			// Sort the array using Quick Sort.
+			quickSort( arrayq1, 0, arraySize - 1 );
 
-		// Get the ending tick.
-		end = clock();
-		// Determine how long it too to read in the third file.
-		qSort = end - start;
+			// Get the ending tick.
+			end = clock();
+			// Determine how long it too to read in the third file.
+			qSort = end - start;
 
-		// Write the sorted array to the output file.
-		writeArray( arrayq1, arraySize, OUTFILE );
+			// Write the sorted array to the output file.
+			writeArray( arrayq1, arraySize, outFile );
 
-		// Print the results to the screen.
-		cout << "Quick Sort of " << OUTFILE << " took " << qSort / CLK_TCK << " seconds (" << qSort << " ticks)." << endl;
+			// Print the results to the screen.
+			cout << "Quick Sort of " << userFile1 << " and " << userFile2 << " took " << qSort / CLK_TCK << " seconds (" << qSort << " ticks)." << endl;
+		}
 	}
 	// Close the file used for reading.
 	dataFile1.close();
@@ -221,14 +278,15 @@ int fileCount( ifstream& _handle )
 
 // Function name:	fileRead()
 // Purpose:		This function will read the content of the provided file handle into an array.
-// Parameters:		The file handle to read, and an array to write to.
+// Parameters:		The file handle to read, an array to write to, an offset to start at.
 // Returns:		The length of the file read.
 // Preconditions:	none
 // Postconditions:	none
-int fileRead( ifstream& _handle, string _array[] )
+int fileRead( ifstream& _handle, string _array[], int _offset )
 {
 	string fileStr = "";	// Variable to temporarily hold the contents read from the file.
-	int length = 0;		// Variable to count the lines in the file.
+	// Test code.
+	//cout << "fileRead() starting at " << _offset << endl;
 
 	// Loop until End Of File, reading one number at a time.
 	while ( !_handle.eof() )
@@ -243,17 +301,17 @@ int fileRead( ifstream& _handle, string _array[] )
 		//cout << "Read line as " << fileStr << endl;
 
 		// Insert the line read from the file into the array.
-		_array[length] = fileStr;
+		_array[_offset] = fileStr;
 
 		// Increment length.
-		length++;
+		_offset++;
 
 		// Test code.
 		//cout << "Total values read so far: " << length << endl;
 	}
 	// Test code.
 	//cout << "Exited the fileRead() while() loop." << endl;
-	return length;
+	return _offset;
 } // End fileRead().
 
 
@@ -266,7 +324,7 @@ int fileRead( ifstream& _handle, string _array[] )
 void printArray( string _array[], int _length )
 {
 	// Loop through the array, one element at a time.
-	for (int i = 0; i < _length; i++)
+	for ( int i = 0; i < _length; i++ )
 	{
 		// Output the content at the current location.
 		cout << _array[i] << " ";
@@ -290,12 +348,12 @@ void writeArray( string _array[], int _length, string _fileName )
 	if ( writeFile.fail() )
 	{
 		// Announce that we could not open the file.
-		cout << "\nCould not open file \"" << _fileName << "\" for reading." << endl;
+		cout << "\nCould not open file \"" << _fileName << "\" for writing." << endl;
 	}
 	else
 	{
 		// Loop through the array, one element at a time.
-		for (int i = 0; i < _length; i++)
+		for ( int i = 0; i < _length; i++ )
 		{
 			// Write the content at the current location to the output file.
 			writeFile << _array[i] << endl;
@@ -324,7 +382,7 @@ void insertionSort( string _array[], int _length )
 
 	string temp = "";
 	int loop = 0;
-	for (int i = 0; i < _length; i++)
+	for ( int i = 0; i < _length; i++ )
 	{
 		// Test code.
 		//cout << "Inside the for() loop." << endl;
@@ -389,7 +447,7 @@ void shellSort( string _array[], int _length )
 			// Put the current array position into temp.
 			temp = _array[i];
 			// Loop through this section.
-			for( j = i; j >= gap ; j-= gap )
+			for ( j = i; j >= gap ; j-= gap )
 			{
 				//Test code.
 				//cout << "Starting third for() loop." << endl;
@@ -424,7 +482,7 @@ void quickSort( string _array[], int _start, int _end )
 	string temp = "";		// A temporary variable to use for swapping values.
 	string pivot = "";		// The pivot.
 
-	pivot = _array[abs( ( _start + ( _end ) ) / 2)];
+	pivot = _array[abs( ( _start + ( _end ) ) / 2 )];
 	// Test code.
 	//cout << "Using " << pivot << " as a pivot, " << _start << " as a start, and " << _end << " as an end." << endl;
 
@@ -444,7 +502,7 @@ void quickSort( string _array[], int _start, int _end )
 			j--;
 		}
 		// If the lower bound reaches the upper bound.
-		if (i <= j)
+		if ( i <= j )
 		{
 			// Test code.
 			//cout << "Swapping indices " << i << " " << j << ", whose values are " << _array[i] << " " << _array[j] << endl;

@@ -24,12 +24,14 @@ using namespace boost::filesystem;
 
 
 const string MENU1 = "Welcome to Adam's logfile sort utility.";
-const string MENU2 = "\n";
+const string MENU2 = "Please enter the name of the first file to sort: ";
+const string MENU3 = "Please enter the name of the second file to sort: ";
 const string HEADER1 = "\n\t\t\t\tElapsed\tElapsed\tOutput";
 const string HEADER2 = "Sort Method\tFile#\tTotal\tTicks\tTime\tFile Name";
 const string INFILE1 = "infile1.txt";	// Input file 1.
 const string INFILE2 = "infile2.txt";	// Input file 2.
 const string OUTFILE = "outfile.txt";	// Output file.
+const int IGNORE = 4096;				// This is used to clear the input buffer.
 
 
 int fileCount( ifstream& _handle );							// My file line-counting function.
@@ -43,6 +45,8 @@ void quickSort( string _array[], int _start, int _length );			// My Quick Sort f
 
 int main()
 {
+	string userFile1 = "";		// The first file name.
+	string userFile2 = "";		// The second file name.
 	int arraySize = 0;			// The number of lines in the current input file.
 	int fileCount1 = 0;			// The number of lines read in input file 1.
 	int fileCount2 = 0;			// The number of lines read in input file 2.
@@ -57,15 +61,38 @@ int main()
 	cout << MENU1 << endl;
 	boost::filesystem::path new_full_path( boost::filesystem::current_path() );
 	std::cout << "Current path is:\n" << new_full_path << std::endl;
-
-	// Open a filestream for the file.
-	ifstream dataFile1( INFILE1 );
+	cout << MENU2 << endl;
+	// Read in the first file name.
+	cin >> userFile1;
+	// Clear the input buffer.
+	cin.ignore( IGNORE, '\n' );
+	cout << endl;
+	
+	cout << MENU3 << endl;
+	// Read in the first file name.
+	cin >> userFile2;
+	// Clear the input buffer.
+	cin.ignore( IGNORE, '\n' );
+	cout << endl;
+	
+	cout << "Attempting to open " << userFile1 << endl;
+	// Open a filestream for the first file.
+	ifstream dataFile1( userFile1 );
+	
+	cout << "Attempting to open " << userFile2 << endl;
+	// Open a filestream for the second file.
+	ifstream dataFile2( userFile2 );
 
 	// Test for file error.
 	if ( dataFile1.fail() )
 	{
 		// Announce that we could not open the file.
-		cout << "Could not open file \"" << INFILE1 << "\" for reading." << endl << endl;
+		cout << "Could not open file \"" << userFile1 << "\" for reading." << endl << endl;
+	}
+	else if ( dataFile2.fail() )
+	{
+		// Announce that we could not open the file.
+		cout << "Could not open file \"" << userFile2 << "\" for reading." << endl << endl;
 	}
 	else
 	{

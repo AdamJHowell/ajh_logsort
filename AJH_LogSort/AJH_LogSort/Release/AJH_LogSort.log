@@ -1,1 +1,3 @@
-﻿LINK : fatal error LNK1104: cannot open file 'libboost_filesystem-vc110-mt-1_57.lib'
+﻿  Generating code
+  Finished generating code
+  AJH_LogSort.vcxproj -> C:\Users\adam\Documents\Visual Studio 2012\Projects\ajh_logsort\AJH_LogSort\Release\AJH_LogSort.exe

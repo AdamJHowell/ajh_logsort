@@ -63,28 +63,29 @@ int main()
 	// Print the program header.
 	cout << MENU1 << endl;
 	boost::filesystem::path new_full_path( boost::filesystem::current_path() );
-	std::cout << "Current path is:\n" << new_full_path << std::endl;
+	cout << "Current path is:\n" << new_full_path << endl;
+	cout << "The log files should be in this directory." << endl;
 
 	cout << MENU2;
-	// Read in the first file name.
+	// Read in the first input file name.
 	cin >> userFile1;
 	// Clear the input buffer.
 	cin.ignore( IGNORE, '\n' );
 	
 	cout << MENU3;
-	// Read in the first file name.
+	// Read in the second input file name.
 	cin >> userFile2;
 	// Clear the input buffer.
 	cin.ignore( IGNORE, '\n' );
 
 	cout << MENU4;
-	// Read in the first file name.
+	// Read in the output file name.
 	cin >> outFile;
 	// Clear the input buffer.
 	cin.ignore( IGNORE, '\n' );
 
 	cout << MENU5;
-	// Read in the first file name.
+	// Read in the desired sort method.
 	cin >> sortChoice;
 	// Clear the input buffer.
 	cin.ignore( IGNORE, '\n' );
@@ -109,12 +110,12 @@ int main()
 		exit (1);
 	}
 
-	// Test code.
+	//Test code.
 	//cout << "Attempting to open " << userFile1 << endl;
 	// Open a filestream for the first file.
 	ifstream dataFile1( userFile1 );
 	
-	// Test code.
+	//Test code.
 	//cout << "Attempting to open " << userFile2 << endl;
 	// Open a filestream for the second file.
 	ifstream dataFile2( userFile2 );
@@ -132,25 +133,25 @@ int main()
 	}
 	else
 	{
-		// Test code.
+		//Test code.
 		//cout << "Opened \"" << INFILE1 << "\" for reading." << endl;
 		
 		// Count the number of lines in file 1.
 		fileSize1 = fileCount( dataFile1 );
-		// forget that we hit the end of file.
+		// Forget that we hit the end of file.
 		dataFile1.clear();
-		// move to the start of the file.
+		// Move to the start of the file.
 		dataFile1.seekg( 0, ios::beg );
 
 		// Count the number of lines in file 2.
 		fileSize2 = fileCount( dataFile2 );
-		// forget that we hit the end of file.
+		// Forget that we hit the end of file.
 		dataFile2.clear();
-		// move to the start of the file.
+		// Move to the start of the file.
 		dataFile2.seekg( 0, ios::beg );
 		arraySize = fileSize1 + fileSize2;
 
-		// Test code.
+		//Test code.
 		//cout << "Counted " << arraySize << " lines in " << INFILE1 << endl;
 
 		string* arrayi1 = new string[arraySize];	// Create arrayi1 on the heap to hold the lines read from the input file.
@@ -258,7 +259,7 @@ int fileCount( ifstream& _handle )
 	// Loop until End Of File, reading one number at a time.
 	while ( !_handle.eof() )
 	{
-		// Test code.
+		//Test code.
 		//cout << "Entered the fileCount() while() loop." << endl;
 
 		// Read one line from dataFile1 into fileStr.  I know this is not fast.  I plan to add a buffered approach later.
@@ -267,10 +268,10 @@ int fileCount( ifstream& _handle )
 		// Increment length.
 		length++;
 
-		// Test code.
+		//Test code.
 		//cout << "Total values read so far: " << length << endl;
 	}
-	// Test code.
+	//Test code.
 	//cout << "Exited the fileCount() while() loop." << endl;
 	return length;
 } // End fileCount().
@@ -285,19 +286,19 @@ int fileCount( ifstream& _handle )
 int fileRead( ifstream& _handle, string _array[], int _offset )
 {
 	string fileStr = "";	// Variable to temporarily hold the contents read from the file.
-	// Test code.
+	//Test code.
 	//cout << "fileRead() starting at " << _offset << endl;
 
 	// Loop until End Of File, reading one number at a time.
 	while ( !_handle.eof() )
 	{
-		// Test code.
+		//Test code.
 		//cout << "Entered the fileRead() while() loop." << endl;
 
 		// Read one line from dataFile1 into fileStr.
 		getline( _handle, fileStr );
 
-		// Test code.
+		//Test code.
 		//cout << "Read line as " << fileStr << endl;
 
 		// Insert the line read from the file into the array.
@@ -306,7 +307,7 @@ int fileRead( ifstream& _handle, string _array[], int _offset )
 		// Increment length.
 		_offset++;
 
-		// Test code.
+		//Test code.
 		//cout << "Total values read so far: " << length << endl;
 	}
 	// Test code.
@@ -377,20 +378,20 @@ void insertionSort( string _array[], int _length )
 	This involves storing the out of place value in a temp variable, shifting all values to make room, and inserting that temp value in it's proper spot.
 	*/
 
-	// Test code.
+	//Test code.
 	//cout << "Starting Insertion Sort" << endl;
 
 	string temp = "";
 	int loop = 0;
 	for ( int i = 0; i < _length; i++ )
 	{
-		// Test code.
+		//Test code.
 		//cout << "Inside the for() loop." << endl;
 
 		loop = i;
 		while ( loop > 0 && _array[loop - 1] > _array[loop] )
 		{
-			// Test code.
+			//Test code.
 			//cout << "Inside the while() loop." << endl;
 
 			// Save the current position in the array to temp.
@@ -403,7 +404,7 @@ void insertionSort( string _array[], int _length )
 			loop--;
 		}
 	}
-	// Test code.
+	//Test code.
 	//cout << "Exiting Insertion Sort" << endl;
 } // End insertionSort().
 
@@ -431,7 +432,7 @@ void shellSort( string _array[], int _length )
 	int j = 0;
 	int gap = 0;
 	string temp = "";
-	// Test code.
+	//Test code.
 	//cout << temp << endl;
 
 	// Start with a gap size of 1/2 _length, and cut it in half again each time we loop.
@@ -483,7 +484,7 @@ void quickSort( string _array[], int _start, int _end )
 	string pivot = "";		// The pivot.
 
 	pivot = _array[abs( ( _start + ( _end ) ) / 2 )];
-	// Test code.
+	//Test code.
 	//cout << "Using " << pivot << " as a pivot, " << _start << " as a start, and " << _end << " as an end." << endl;
 
 	// While the lower bound has not reached the upper bound.
@@ -504,7 +505,7 @@ void quickSort( string _array[], int _start, int _end )
 		// If the lower bound reaches the upper bound.
 		if ( i <= j )
 		{
-			// Test code.
+			//Test code.
 			//cout << "Swapping indices " << i << " " << j << ", whose values are " << _array[i] << " " << _array[j] << endl;
 			// Swap the two values.
 			temp = _array[i];
@@ -518,13 +519,13 @@ void quickSort( string _array[], int _start, int _end )
 	}
 	if ( _start < j )
 	{
-		// Test code.
+		//Test code.
 		//cout << "Lower recusion." << endl;
 		quickSort( _array, _start, j );
 	}
 	if ( i < _end )
 	{
-		// Test code.
+		//Test code.
 		//cout << "Upper recusion." << endl;
 		quickSort( _array, i, _end );
 	}
